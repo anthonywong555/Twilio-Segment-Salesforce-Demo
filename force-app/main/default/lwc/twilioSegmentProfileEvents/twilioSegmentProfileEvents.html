@@ -1,3 +1,14 @@
 <template>
-    <h1>Hello World</h1>
+    <lightning-card title="Twilio Segment">
+        <ul class="slds-timeline">
+            <template for:each={data} for:item="aEvent">
+                <c-twilio-segment-profile-event-item 
+                    key={aEvent.message_id}
+                    title={aEvent.event}
+                    icon="custom:custom14"
+                    timestamp={aEvent.timestamp}
+                ></c-twilio-segment-profile-event-item>
+            </template>
+        </ul>
+    </lightning-card>
 </template>
