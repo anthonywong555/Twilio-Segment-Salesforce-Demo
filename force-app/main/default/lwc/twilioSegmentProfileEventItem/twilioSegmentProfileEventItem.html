@@ -32,15 +32,20 @@
                             <p class="slds-timeline__date">{timestamp}</p>
                         </div>
                     </div>
+                    <p class="slds-m-horizontal_xx-small">
+                        {title}
+                    </p>
                     <article
                         class="slds-box slds-timeline__item_details slds-theme_shade slds-m-top_x-small slds-m-horizontal_xx-small"
                         id="task-item-base"
                         aria-hidden="false"
                     >
                         <ul class="slds-list_horizontal slds-wrap">
-                            <li class="slds-grid slds-grid_vertical slds-size_1-of-1">
-                                Pizza
-                            </li>
+                            <template for:each={properties} for:item="aProp">
+                                <li key={aProp.id} class="slds-grid slds-grid_vertical slds-size_1-of-1">
+                                    {aProp.key} = {aProp.value}
+                                </li>
+                            </template>
                         </ul>
                     </article>
                 </div>
