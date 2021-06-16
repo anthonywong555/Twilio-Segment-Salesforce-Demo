@@ -3,18 +3,26 @@
         <div class="slds-var-m-around_medium" style="text-align: center;">
             <img src={twilioSegmentLogoURL} alt="Twilio Segment Logo" />
         </div>
-        <div style="height:500px; overflow: auto;">
-            <ul class="slds-timeline">
-                <template for:each={data} for:item="aEvent">
-                    <c-twilio-segment-profile-event-item 
-                        key={aEvent.message_id}
-                        title={aEvent.event}
-                        icon={aEvent.icon}
-                        timestamp={aEvent.timestamp}
-                        properties={aEvent.properties}
-                    ></c-twilio-segment-profile-event-item>
-                </template>
-            </ul>
+        <div if:false={isFetching}>
+            <div class="scrollContainer" onscroll={handleScroll}>
+                <div class="scrollArea">
+                    <ul class="slds-timeline">
+                        <template for:each={data} for:item="aEvent">
+                            <c-twilio-segment-profile-event-item 
+                                key={aEvent.message_id}
+                                title={aEvent.event}
+                                icon={aEvent.icon}
+                                timestamp={aEvent.timestamp}
+                                properties={aEvent.properties}
+                            ></c-twilio-segment-profile-event-item>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div if:true={isFetching} class="slds-is-relative">
+            <lightning-spinner variant="brand" size="large">
+            </lightning-spinner>
         </div>
     </lightning-card>
 </template>

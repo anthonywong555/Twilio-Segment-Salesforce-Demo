@@ -17,3 +17,13 @@
   ::-webkit-scrollbar-thumb:hover {
     background: #bbb; 
   }
+
+  .scrollContainer {
+    max-height: 500px;
+    overflow: auto;
+    position: relative;
+}
+
+.scrollArea {
+    position: relative;
+}

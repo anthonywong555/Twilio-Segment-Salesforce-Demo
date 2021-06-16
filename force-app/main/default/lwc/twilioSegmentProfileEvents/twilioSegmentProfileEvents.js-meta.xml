@@ -4,8 +4,12 @@
     <isExposed>true</isExposed>
     <description>This components pulls data from Twilio Segment Profile's Events</description>
     <targets>
-        <target>lightning__AppPage</target>
         <target>lightning__RecordPage</target>
-        <target>lightning__HomePage</target>
     </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <property name="segmentIdentifierKey" type="String" label="Segment Identifier Key" required="true" description="Segment Identifier Key. Example phone." default=""/>    
+            <property name="segmentIdentifierValue" type="String" label="Segment Identifier Value" required="true" description="Object Field Value. For example MobilePhone." default=""/>    
+        </targetConfig>
+    </targetConfigs>
 </LightningComponentBundle>
