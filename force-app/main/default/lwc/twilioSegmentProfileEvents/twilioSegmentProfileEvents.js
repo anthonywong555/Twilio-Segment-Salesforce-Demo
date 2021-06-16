@@ -4,18 +4,29 @@ import getEvents from '@salesforce/apex/TwilioSegmentProfileEventsController.get
 import loadMore from '@salesforce/apex/TwilioSegmentProfileEventsController.loadMore';
 
 export default class TwilioSegmentProfileEvents extends LightningElement {
+  /**
+   * API
+   */
   @api recordId;
   @api objectApiName;
   @api segmentIdentifierKey;
   @api segmentIdentifierValue;
 
+  /**
+   * Track
+   */
+  @track data = [];
+
+  /**
+   * Properties
+   */
+  errorMessage = '';
+  hasError = false;
+  isFetching = false;
   twilioSegmentLogoURL = twilioSegmentLogoURL;
   events;
-  @track data = [];
-  @api isFetching = false;
   hasMore = false;
   cssClasses = "slds-timeline__item_expandable slds-timeline__item_email to-expand";
-
   cursor;
 
   constructor(props) {
@@ -23,77 +34,58 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
     this.isFetching = true;
   }
 
-  @wire(getEvents, {recordId: '$recordId', objectAPIName: '$objectApiName', segmentIdentifierKey: '$segmentIdentifierKey', segmentIdentifierValue: '$segmentIdentifierValue'})
+  @wire(getEvents, {
+    recordId: '$recordId', 
+    objectAPIName: '$objectApiName', 
+    segmentIdentifierKey: '$segmentIdentifierKey', 
+    segmentIdentifierValue: '$segmentIdentifierValue'
+  })
   wiredEvents({data, error}) {
     this.isFetching = false;
-    console.log(
-      `%cWiredEvents!`,
-      "color:red;font-family:system-ui;font-size:4rem;-webkit-text-stroke: 1px black;font-weight:bold"
-    );
-    console.log(data);
-    console.log(error);
     if(data) {
-      console.log(
-        `%cData!`,
-        "color:red;font-family:system-ui;font-size:4rem;-webkit-text-stroke: 1px black;font-weight:bold"
-      );
       this.events = JSON.parse(data);
       this.hasMore = this.events.cursor.has_more;
       this.cursor = this.events.cursor;
       const newTemp = this.formatData(this.events.data);
-      //this.data = this.events.data;
       this.data = newTemp;
-      console.log(this.events);
-      console.log(this.data);
     } else if(error) {
-
+      this.handleError(error);
     }
   }
 
   async handleScroll(event) {
-    let area = this.template.querySelector('.scrollArea');
-    let threshold = 2 * event.target.clientHeight;
-    let areaHeight = area.clientHeight;
-    let scrollTop = event.target.scrollTop;
-
-    //const object = {area, threshold, areaHeight, scrollTop, hasMore}
+    const area = this.template.querySelector('.scrollArea');
+    const threshold = 2 * event.target.clientHeight;
+    const areaHeight = area.clientHeight;
+    const scrollTop = event.target.scrollTop;
 
     if(areaHeight - threshold < scrollTop && this.hasMore && !this.isFetching) {
       this.isFetching = true;
-      //alert('Firing');
       await this.handleMoreFetch();
     }
   }
 
+  handleError(e) {
+    const {body, status} = e;
+    const {message} = body;
+    this.hasError = true;
+    this.errorMessage = message;
+  }
+
   async handleMoreFetch() {
-    console.log(
-      `%chandleMoreFetch!`,
-      "color:red;font-family:system-ui;font-size:4rem;-webkit-text-stroke: 1px black;font-weight:bold"
-    );
     try {
-      //this.data = this.data.concat(this.data);
       const {url} = this.cursor;
-      console.log(`url: ${url}`);
       const results = await loadMore({ cursorUrl: url });
-      console.log(results);
 
       this.events = JSON.parse(results);
       this.hasMore = this.events.cursor.has_more;
       this.cursor = this.events.cursor;
       const newTemp = this.formatData(this.events.data);
-      //this.data = this.events.data;
+      
       this.data = this.data.concat(newTemp);
-      console.log(this.events);
-      console.log(this.data);
-
       this.isFetching = false;
-      //this.hasMore = false;
     } catch(e) {
-      console.log(
-        `%cError!`,
-        "color:red;font-family:system-ui;font-size:4rem;-webkit-text-stroke: 1px black;font-weight:bold"
-      );
-      console.error(e);
+      this.handleError(e);
     }
   }
 
