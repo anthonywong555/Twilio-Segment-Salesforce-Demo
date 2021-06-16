@@ -10,18 +10,27 @@ public with sharing class TwilioSegmentServices {
             identity + 
             '/events?limit=20';
        	String username = System.Label.Twilio_Segment_Access_Token;
-        Http h = new Http();
-        HTTPRequest r = new HTTPRequest();
-        r.setEndpoint(uri);
+        Http http = new Http();
+        HTTPRequest request = new HTTPRequest();
+        request.setEndpoint(uri);
         Blob headerValue = Blob.valueOf(username + ':');
-        String authorizationHeader = 'BASIC ' + EncodingUtil.base64Encode(headerValue);
-        r.setHeader('Authorization', authorizationHeader);
-        r.setMethod('GET');
-        HTTPResponse resp = h.send(r);
-        return TwilioSegmentProfileEventResponse.parse(resp.getBody());
+        String authorizationHeader = 'Basic ' + EncodingUtil.base64Encode(headerValue);
+        request.setHeader('Authorization', authorizationHeader);
+        request.setMethod('GET');
+        HTTPResponse response = http.send(request);
+        return TwilioSegmentProfileEventResponse.parse(response.getBody());
     }
-    
-    public static TwilioSegmentProfileEventResponse getProfileEvents(String phoneNumber) {
-        return getProfileEvents('phone', phoneNumber);
+
+    public static TwilioSegmentProfileEventResponse getProfileEvents(String cursorUrl) {
+       	String username = System.Label.Twilio_Segment_Access_Token;
+        Http http = new Http();
+        HTTPRequest request = new HTTPRequest();
+        request.setEndpoint(cursorUrl);
+        Blob headerValue = Blob.valueOf(username + ':');
+        String authorizationHeader = 'Basic ' + EncodingUtil.base64Encode(headerValue);
+        request.setHeader('Authorization', authorizationHeader);
+        request.setMethod('GET');
+        HTTPResponse response = http.send(request);
+        return TwilioSegmentProfileEventResponse.parse(response.getBody());
     }
 }
