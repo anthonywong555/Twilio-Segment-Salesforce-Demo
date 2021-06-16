@@ -12,7 +12,6 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
   twilioSegmentLogoURL = twilioSegmentLogoURL;
   events;
   @track data = [];
-  buttonClicked;
   @api isFetching = false;
   hasMore = false;
   cssClasses = "slds-timeline__item_expandable slds-timeline__item_email to-expand";
