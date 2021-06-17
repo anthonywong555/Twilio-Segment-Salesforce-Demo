@@ -7,7 +7,7 @@
             <div class="scrollContainer" onscroll={handleScroll}>
                 <div class="scrollArea">
                     <ul class="slds-timeline">
-                        <template for:each={data} for:item="aEvent">
+                        <template for:each={events} for:item="aEvent">
                             <c-twilio-segment-profile-event-item 
                                 key={aEvent.message_id}
                                 title={aEvent.title}
