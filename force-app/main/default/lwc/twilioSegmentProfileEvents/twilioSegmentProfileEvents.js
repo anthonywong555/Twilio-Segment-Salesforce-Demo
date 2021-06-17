@@ -4,6 +4,8 @@ import getEvents from '@salesforce/apex/TwilioSegmentProfileEventsController.get
 import loadMore from '@salesforce/apex/TwilioSegmentProfileEventsController.loadMore';
 import getSettings from '@salesforce/apex/TwilioSegmentProfileEventsController.getSettings';
 
+import { getIcon } from 'c/icon';
+
 export default class TwilioSegmentProfileEvents extends LightningElement {
   /**
    * API
@@ -107,7 +109,7 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
 
     const icon = 
       (targetSetting && targetSetting.event.isVisible__c) ?
-      targetSetting.event.Icon__c : "standard:account";
+      targetSetting.event.Icon__c : getIcon(targetEvent.event);
 
     // Format Timestamp
     const timestamp = new Date(targetEvent.timestamp);
@@ -159,6 +161,7 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
 
     // Transform Segment Events based on Settings
     this.events = this.events.concat(this.transformEvents(eventResponse.data, this.settings));
+    console.log(`this.events`, this.events);
   }
 
   handleError(e) {
@@ -193,9 +196,5 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
 
     // Remove Loading Wheel
     this.isFetching = !this.isFetching;
-  }
-
-  getIcon(eventName) {
-
   }
 }
