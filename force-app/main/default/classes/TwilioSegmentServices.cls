@@ -1,23 +1,25 @@
 public with sharing class TwilioSegmentServices {
-    
+
     @TestVisible
     private static final String HTTP_METHOD_GET = 'GET';
 
-    public static TwilioSegmentProfileEventResponse getProfileEvents(String identifierKey, String identifierValue) {
+    public static String getProfileEvents(String identifierKey, String identifierValue) {
+        String spaceId = System.Label.Twilio_Segment_Space_Id;
+        String identity = identifierKey + ':' + identifierValue;
         String uri = 
             'https://profiles.segment.com/v1/spaces/' + 
             spaceId + 
             '/collections/users/profiles/' + 
             identity + 
             '/events?limit=20';
-       	return performRequest(uri);
+        return performRequest(uri);
     }
 
-    public static TwilioSegmentProfileEventResponse getProfileEvents(String cursorUrl) {
-       	return performRequest(cursorUrl);
+    public static String getProfileEvents(String cursorUrl) {
+        return performRequest(cursorUrl);
     }
 
-    private static TwilioSegmentProfileEventResponse performRequest(String uri) {
+    private static String performRequest(String uri) {
         // Generate Authorization Header
         String username = System.Label.Twilio_Segment_Access_Token;
         Blob headerValue = Blob.valueOf(username + ':');
@@ -32,6 +34,6 @@ public with sharing class TwilioSegmentServices {
 
         // Perform Request
         HTTPResponse response = http.send(request);
-        return TwilioSegmentProfileEventResponse.parse(response.getBody());
+        return response.getBody();
     }
 }
