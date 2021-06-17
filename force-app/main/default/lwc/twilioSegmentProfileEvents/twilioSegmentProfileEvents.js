@@ -2,6 +2,7 @@ import { LightningElement, wire, track, api } from 'lwc';
 import twilioSegmentLogoURL from '@salesforce/resourceUrl/Twilio_Segment_Logo';
 import getEvents from '@salesforce/apex/TwilioSegmentProfileEventsController.getEvents';
 import loadMore from '@salesforce/apex/TwilioSegmentProfileEventsController.loadMore';
+import getSettings from '@salesforce/apex/TwilioSegmentProfileEventsController.getSettings';
 
 export default class TwilioSegmentProfileEvents extends LightningElement {
   /**
@@ -11,6 +12,7 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
   @api objectApiName;
   @api segmentIdentifierKey;
   @api segmentIdentifierValue;
+  @api autofetch = 0;
 
   /**
    * Track
@@ -20,6 +22,7 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
   /**
    * Properties
    */
+  settings;
   errorMessage = '';
   hasError = false;
   isFetching = false;
@@ -28,6 +31,8 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
   hasMore = false;
   cssClasses = "slds-timeline__item_expandable slds-timeline__item_email to-expand";
   cursor;
+
+  @wire(getSettings) settingJSON;
 
   constructor(props) {
     super(props);
@@ -41,15 +46,25 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
     segmentIdentifierValue: '$segmentIdentifierValue'
   })
   wiredEvents({data, error}) {
-    this.isFetching = false;
-    if(data) {
-      this.events = JSON.parse(data);
-      this.hasMore = this.events.cursor.has_more;
-      this.cursor = this.events.cursor;
-      const newTemp = this.formatData(this.events.data);
-      this.data = newTemp;
-    } else if(error) {
-      this.handleError(error);
+    console.log(
+      "%cWiredEvents!",
+      "color:red;font-family:system-ui;font-size:4rem;-webkit-text-stroke: 1px black;font-weight:bold"
+    );
+
+    if(this.settingJSON.data) {
+      this.settings = JSON.parse(this.settingJSON.data);
+      console.log(this.settings);
+
+      this.isFetching = false;
+      if(data) {
+        this.events = JSON.parse(data);
+        this.hasMore = this.events.cursor.has_more;
+        this.cursor = this.events.cursor;
+        const newTemp = this.formatData(this.events.data);
+        this.data = newTemp;
+      } else if(error) {
+        this.handleError(error);
+      }
     }
   }
 
@@ -94,24 +109,76 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
     const iconsArray = icons.split(',');
     const temp = data;
     const newTemp = temp.map(aEvent => {
-      const objectArray = Object.entries(aEvent.properties);
+      const targetSetting = this.settings.find((aSetting) => {
+        const {event} = aSetting;
+        const {Event_Name__c} = event;
+        return Event_Name__c == aEvent.event;
+      });
+
+      console.log(targetSetting);
+
+      const timestamp = new Date(aEvent.timestamp);
+      const date = `${timestamp.getMonth()}/${timestamp.getDay()}/${timestamp.getFullYear()}`;
+      const time = timestamp.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+      
+      if(targetSetting && targetSetting.event.isVisible__c) {
+        const {event, properties} = targetSetting;
+        const icon = event.Icon__c;
+        const title = event.MasterLabel;
+        const transformProps = this.transformProps(aEvent.properties, properties);
+        return {
+          title,
+          icon,
+          properties: transformProps,
+          timestamp: `${time} | ${date}`,
+          message_id: aEvent.message_id
+        }
+      } else if(targetSetting && !targetSetting.event.isVisible__c) {
+        return {};
+      } else {
+        const properties = this.transformProps(aEvent.properties, null);
+        return {
+          title: aEvent.event,
+          icon: iconsArray[Math.floor(Math.random()*iconsArray.length)],
+          properties,
+          timestamp: `${time} | ${date}`
+        };
+      }
+    });
+
+    const newTemp2 = newTemp.filter(aTemp => Object.keys(aTemp).length > 0);
+    return newTemp2;
+  }
+
+  transformProps(eventProps, propSettings) {
+    console.log(
+      "%cTransformProps!",
+      "color:red;font-family:system-ui;font-size:4rem;-webkit-text-stroke: 1px black;font-weight:bold"
+    );
+
+    if(propSettings && propSettings.length > 0) {
+      const results = [];
+
+      for(const aPropSetting of propSettings) {
+        const {Key__c, MasterLabel} = aPropSetting;
+        results.push({
+          key: MasterLabel,
+          value: eventProps[Key__c],
+          id: `${Key__c}${MasterLabel}${Math.random()}`
+        })
+      }
+
+      return results;
+    } else {
+      const objectArray = Object.entries(eventProps);
       const properties = objectArray.map(([key, value]) => {
         return {
           key,
           value,
           id: `${key}${value}${Math.random()}`
         }
-      })
-      const timestamp = new Date(aEvent.timestamp);
-      const date = `${timestamp.getMonth()}/${timestamp.getDay()}/${timestamp.getFullYear()}`;
-      const time = timestamp.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-      return {
-        ...aEvent,
-        icon: iconsArray[Math.floor(Math.random()*iconsArray.length)],
-        properties,
-        timestamp: `${time} | ${date}`
-      };
-    });
-    return newTemp;
+      });
+      return properties;
+    }
   }
 }
