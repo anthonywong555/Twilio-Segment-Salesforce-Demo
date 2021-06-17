@@ -7,6 +7,15 @@
 	</types>
 	<types>
 		<members>*</members>
+		<name>CustomMetadata</name>
+	</types>
+	<types>
+		<members>Twilio_Segment_Event_Property__mdt</members>
+		<members>Twilio_Segment_Event__mdt</members>
+		<name>CustomObject</name>
+	</types>
+	<types>
+		<members>*</members>
 		<name>LightningComponentBundle</name>
 	</types>
 	<version>51.0</version>
