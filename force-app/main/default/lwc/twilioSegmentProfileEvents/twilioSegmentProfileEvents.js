@@ -1,10 +1,10 @@
-import { LightningElement, wire, track, api } from 'lwc';
+import { LightningElement, track, api } from 'lwc';
 import twilioSegmentLogoURL from '@salesforce/resourceUrl/Twilio_Segment_Logo';
 import getEvents from '@salesforce/apex/TwilioSegmentProfileEventsController.getEvents';
 import loadMore from '@salesforce/apex/TwilioSegmentProfileEventsController.loadMore';
 import getSettings from '@salesforce/apex/TwilioSegmentProfileEventsController.getSettings';
 
-import { getIcon } from 'c/icon';
+import {transformEvents} from 'c/twilioSegmentProfileEventsProcessor';
 
 export default class TwilioSegmentProfileEvents extends LightningElement {
   /**
@@ -74,85 +74,6 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
     }
   }
 
-  /**
-   * Transform the Event Data Based on Settings to be consume in the front end.
-   * @param {Array of Events} events 
-   * @param {Objects} settings 
-   * @returns {Array of Events}
-   */
-  transformEvents(events, settings) {
-    let modifyEvents = events.map((aEvent) => {
-      const relatedSetting = settings.find((aSetting) => {
-        const {event} = aSetting;
-        const {Event_Name__c} = event;
-        return Event_Name__c === aEvent.event;
-      });
-
-      return this.transformEvent(aEvent, relatedSetting);
-    });
-
-    // Remove Empty Object from the Array.
-    modifyEvents = modifyEvents.filter(aEvent => Object.keys(aEvent).length > 0);
-    return modifyEvents;
-  }
-
-  transformEvent(targetEvent, targetSetting) {
-    const targetSettingProps = targetSetting ? targetSetting.properties : null;
-    const targetEventProps = targetEvent.properties;
-    if(targetSetting && !targetSetting.event.isVisible__c) {
-      return {};
-    }
-
-    const title = 
-      (targetSetting && targetSetting.event.isVisible__c) ?
-      targetSetting.event.MasterLabel : targetEvent.event;
-
-    const icon = 
-      (targetSetting && targetSetting.event.isVisible__c) ?
-      targetSetting.event.Icon__c : getIcon(targetEvent.event);
-
-    // Format Timestamp
-    const timestamp = new Date(targetEvent.timestamp);
-    const date = `${timestamp.getMonth()}/${timestamp.getDay()}/${timestamp.getFullYear()}`;
-    const time = timestamp.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-
-    const {message_id} = targetEvent;
-    const properties = this.transformEventProps(targetEventProps, targetSettingProps);
-
-    return {
-      title,
-      icon,
-      properties,
-      message_id,
-      timestamp: `${time} | ${date}`,
-    };
-  }
-
-  transformEventProps(targetEventProps, targetSettingProps) {
-    if(targetSettingProps && targetSettingProps.length > 0) {
-      const results = [];
-
-      for(const aPropSetting of targetSettingProps) {
-        const {Key__c, MasterLabel} = aPropSetting;
-        results.push({
-          key: MasterLabel,
-          value: targetEventProps[Key__c],
-          id: `${Key__c}${MasterLabel}${Math.random()}`
-        })
-      }
-
-      return results;
-    } else {
-      return Object.entries(targetEventProps).map(([key, value]) => {
-        return {
-          key,
-          value,
-          id: `${key}${value}${Math.random()}`
-        }
-      });
-    }
-  }
-
   handleEventResponse(eventResponse) {
     // Set Properties
     this.eventResponse = eventResponse;
@@ -160,7 +81,7 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
     this.hasMore = eventResponse.cursor.has_more;
 
     // Transform Segment Events based on Settings
-    this.events = this.events.concat(this.transformEvents(eventResponse.data, this.settings));
+    this.events = this.events.concat(transformEvents(eventResponse.data, this.settings));
     console.log(`this.events`, this.events);
   }
 
