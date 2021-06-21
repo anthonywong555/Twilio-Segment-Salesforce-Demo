@@ -73,7 +73,7 @@ public with sharing class TwilioSegmentProfileEventsController {
             if(!sObjects.isEmpty()) {
                 sObject targetSObject = sObjects[0];
                 String value = (String)targetSObject.get(segmentIdentifierValue);
-                results = TwilioSegmentServices.getProfileEvents(segmentIdentifierKey, value);
+                results = TwilioSegmentServices.getProfileEvents(segmentIdentifierKey, value).json;
             }
 
             return results;
@@ -85,7 +85,7 @@ public with sharing class TwilioSegmentProfileEventsController {
     @AuraEnabled(cacheable=true)
     public static string loadMore(String cursorUrl) {
         try {
-            String results = TwilioSegmentServices.getProfileEvents(cursorUrl);
+            String results = TwilioSegmentServices.getProfileEvents(cursorUrl).json;
             return results;
         } catch(Exception e) {
             throw new AuraHandledException(e.getMessage());
