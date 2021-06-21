@@ -23,7 +23,6 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
    */
   //@track data = [];
   @track events = [];
-  unTrackEvents = [];
 
   /**
    * Properties
@@ -89,10 +88,6 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
 
   async handleAutoRefresh() {
     try {
-      console.log(
-        "%cHandle Auto Refresh!",
-        "color:red;font-family:system-ui;font-size:4rem;-webkit-text-stroke: 1px black;font-weight:bold"
-      );
       this.isFetching = !this.isFetching;
 
       // Get Segment Events
@@ -126,8 +121,6 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
     // Transform Segment Events based on Settings
     const tEvents = transformEvents(eventResponse.data, this.settings);
 
-    console.log(`tEvents`, tEvents);
-
     // Check to see if tEvents is duplicate in this.events based on key
     const filterTEvents = tEvents.filter(anEvent => {
       const result = this.events.find((currentEvent) => {
@@ -137,23 +130,13 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
       return result == undefined;
     });
 
-    console.log(`filterTEvents`, filterTEvents);
-
     // Only Add New Events
     if(filterTEvents.length > 0) {
-      // Add to this.event 
-      let temp = this.unTrackEvents.concat(filterTEvents);
+      this.events = this.events.concat(filterTEvents);
 
-      // Sort it by createdDate
-      this.unTrackEvents = temp.sort((a, b) => {
+      this.events.sort((a, b) => {
         return b.createdDate - a.createdDate;
       });
-
-      this.events = temp;
-      console.log(`temp`, temp);
-      console.log(`unTrackEvents`, this.unTrackEvents);
-      console.log(`this.events`, this.events);
-
     }
   }
 
