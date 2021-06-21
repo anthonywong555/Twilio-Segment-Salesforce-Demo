@@ -23,6 +23,7 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
    */
   //@track data = [];
   @track events = [];
+  unTrackEvents = [];
 
   /**
    * Properties
@@ -138,16 +139,21 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
 
     console.log(`filterTEvents`, filterTEvents);
 
+    // Only Add New Events
     if(filterTEvents.length > 0) {
       // Add to this.event 
-      this.events = this.events.concat(filterTEvents);
+      let temp = this.unTrackEvents.concat(filterTEvents);
 
       // Sort it by createdDate
-      this.events.sort((a, b) => {
-        return a.createdDate >= b.createdDate;
+      this.unTrackEvents = temp.sort((a, b) => {
+        return b.createdDate - a.createdDate;
       });
 
+      this.events = temp;
+      console.log(`temp`, temp);
+      console.log(`unTrackEvents`, this.unTrackEvents);
       console.log(`this.events`, this.events);
+
     }
   }
 
