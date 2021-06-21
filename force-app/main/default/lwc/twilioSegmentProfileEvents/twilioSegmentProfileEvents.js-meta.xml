@@ -9,7 +9,9 @@
     <targetConfigs>
         <targetConfig targets="lightning__RecordPage">
             <property name="segmentIdentifierKey" type="String" label="Segment Identifier Key" required="true" description="Segment Identifier Key. Example phone." default=""/>    
-            <property name="segmentIdentifierValue" type="String" label="Segment Identifier Value" required="true" description="Object Field Value. For example MobilePhone." default=""/>    
+            <property name="segmentIdentifierValue" type="String" label="Segment Identifier Value" required="true" description="Object Field Value. For example MobilePhone." default=""/>
+            <property name="isAutoFetch" type="Boolean" label="Auto Fetch" required="false" description="Fetch new events." default="false"/>
+            <property name="autoFetchInMins" type="Integer" label="Auto Fetch in Mins" required="false" description="Fetch new events in mins." min="1" max="5" default="5"/>
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

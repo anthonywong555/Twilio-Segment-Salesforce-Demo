@@ -45,6 +45,8 @@ const transformEvent = (targetEvent, targetSetting) => {
     properties,
     message_id,
     timestamp: `${time} | ${date}`,
+    createdDate: timestamp,
+    key: message_id
   };
 }
 

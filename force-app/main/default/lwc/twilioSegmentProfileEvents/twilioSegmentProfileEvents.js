@@ -14,7 +14,9 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
   @api objectApiName;
   @api segmentIdentifierKey;
   @api segmentIdentifierValue;
-  @api autofetch = 0;
+  
+  @api isAutoFetch = false;
+  @api autoFetchInMins = 1;
 
   /**
    * Track
@@ -45,6 +47,8 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
   // Compoment Lifecycle
   hasConnectedCallback = false;
 
+  timer;
+
   async connectedCallback() {
     if(!this.hasConnectedCallback) {
       // Set Loading Wheel
@@ -65,6 +69,14 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
 
         // Transform and Set Component Props
         this.handleEventResponse(eventResponse);
+
+        if(this.isAutoFetch && this.autoFetchInMins > 0) {
+          // Set Timeout
+          const mins = this.autoFetchInMins * 60 * 1000;
+          this.timer = setInterval(async() => {
+            await this.handleAutoRefresh();
+          }, mins);
+        }
       } catch(e) {
         this.handleError(e);
       }
@@ -74,6 +86,36 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
     }
   }
 
+  async handleAutoRefresh() {
+    try {
+      console.log(
+        "%cHandle Auto Refresh!",
+        "color:red;font-family:system-ui;font-size:4rem;-webkit-text-stroke: 1px black;font-weight:bold"
+      );
+      this.isFetching = !this.isFetching;
+
+      // Get Segment Events
+      const eventResponse = JSON.parse(await getEvents({
+        recordId: this.recordId, 
+        objectAPIName: this.objectApiName, 
+        segmentIdentifierKey: this.segmentIdentifierKey, 
+        segmentIdentifierValue: this.segmentIdentifierValue
+      }));
+
+      // Transform and Set Component Props
+      this.handleEventResponse(eventResponse);
+
+      this.isFetching = !this.isFetching;
+
+    } catch(e) {
+      this.handleError(e);
+    }
+  }
+
+  disconnectedCallback() {
+    clearInterval(this.timer);
+  }
+
   handleEventResponse(eventResponse) {
     // Set Properties
     this.eventResponse = eventResponse;
@@ -81,8 +123,32 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
     this.hasMore = eventResponse.cursor.has_more;
 
     // Transform Segment Events based on Settings
-    this.events = this.events.concat(transformEvents(eventResponse.data, this.settings));
-    console.log(`this.events`, this.events);
+    const tEvents = transformEvents(eventResponse.data, this.settings);
+
+    console.log(`tEvents`, tEvents);
+
+    // Check to see if tEvents is duplicate in this.events based on key
+    const filterTEvents = tEvents.filter(anEvent => {
+      const result = this.events.find((currentEvent) => {
+        return anEvent.key === currentEvent.key;
+      });
+
+      return result == undefined;
+    });
+
+    console.log(`filterTEvents`, filterTEvents);
+
+    if(filterTEvents.length > 0) {
+      // Add to this.event 
+      this.events = this.events.concat(filterTEvents);
+
+      // Sort it by createdDate
+      this.events.sort((a, b) => {
+        return a.createdDate >= b.createdDate;
+      });
+
+      console.log(`this.events`, this.events);
+    }
   }
 
   handleError(e) {

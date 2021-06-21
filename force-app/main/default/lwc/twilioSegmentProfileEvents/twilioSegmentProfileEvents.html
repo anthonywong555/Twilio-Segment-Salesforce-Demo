@@ -9,7 +9,7 @@
                     <ul class="slds-timeline">
                         <template for:each={events} for:item="aEvent">
                             <c-twilio-segment-profile-event-item 
-                                key={aEvent.message_id}
+                                key={aEvent.key}
                                 title={aEvent.title}
                                 icon={aEvent.icon}
                                 timestamp={aEvent.timestamp}
