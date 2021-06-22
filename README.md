@@ -21,13 +21,15 @@ You will need the following:
 3. Click Manage Twilio Segment Profile Credentials.
 4. Click New.
 5. Fill in the following values:
+
 | Field                                  | Value                                   |
 |----------------------------------------|-----------------------------------------|
 | Label                                  | Default                                 |
 | Twilio Segment Profile Credential Name | Default                                 |
 | Space Id                               | INSERT YOUR TWILIO SEGMENT SPACE ID     |
 | Access Token                           | INSERT YOUR TWILIO SEGMENT ACCESS TOKEN |
-6. Save
+
+6. Click Save
 
 ### Adding LWC Component 
 
