@@ -3,7 +3,7 @@ public with sharing class TwilioSegmentProfileEventsController {
     @AuraEnabled(cacheable=true)
     public static String getSettings() {
         try {
-            // Load Custom Metadata
+            // Only load active Twilio Segment Events Settings.
             Map<Id, Twilio_Segment_Event__mdt> events = new Map<Id, Twilio_Segment_Event__mdt>([
                 SELECT Id, MasterLabel, Event_Name__c, Icon__c, isVisible__c
                 FROM Twilio_Segment_Event__mdt
@@ -67,7 +67,6 @@ public with sharing class TwilioSegmentProfileEventsController {
         try {
             String dynamicSOQL = 'SELECT Id, ' + segmentIdentifierValue + ' FROM ' + objectAPIName + ' WHERE Id =: recordId';
             String safeQuery = String.escapeSingleQuotes(dynamicSOQL);
-            System.debug(safeQuery);
             List<sObject> sObjects = Database.query(safeQuery);
             String results = '{}';
             if(!sObjects.isEmpty()) {
