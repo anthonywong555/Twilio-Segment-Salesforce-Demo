@@ -29,30 +29,37 @@ public with sharing class TwilioSegmentServices {
     @TestVisible
     private static final String HTTP_METHOD_GET = 'GET';
 
+    public static TwilioSegmentProfileTraitsResponse getProfileTraits(String identifierKey, String identifierValue) {
+        String spaceId = credential.Space_Id__c;
+        String identity = identifierKey + ':' + identifierValue;
+        String uri = generateURI(spaceId, identity, 'traits', 200);
+        return TwilioSegmentProfileTraitsResponse.parse(performRequest(uri));
+    }
+
     public static TwilioSegmentProfileEventResponse getProfileEvents(String identifierKey, String identifierValue) {
         String spaceId = credential.Space_Id__c;
         String identity = identifierKey + ':' + identifierValue;
-        String uri = generateURI(spaceId, identity);
-        return performRequest(uri);
+        String uri = generateURI(spaceId, identity, 'events', 20);
+        return TwilioSegmentProfileEventResponse.parse(performRequest(uri));
     }
 
     @TestVisible
-    private static String generateURI(String spaceId, String identity) {
+    private static String generateURI(String spaceId, String identity, String routes, Integer limits) {
         String uri = 
             'https://profiles.segment.com/v1/spaces/' + 
             spaceId + 
             '/collections/users/profiles/' + 
             identity + 
-            '/events?limit=20';
+            '/' + routes + '?limit=' + limits;
 
         return uri;
     }
 
     public static TwilioSegmentProfileEventResponse getProfileEvents(String cursorUrl) {
-        return performRequest(cursorUrl);
+        return TwilioSegmentProfileEventResponse.parse(performRequest(cursorUrl));
     }
 
-    private static TwilioSegmentProfileEventResponse performRequest(String uri) {
+    private static String performRequest(String uri) {
         // Generate Authorization Header
         String username = credential.Access_Token__c;
         Blob headerValue = Blob.valueOf(username + ':');
@@ -67,7 +74,7 @@ public with sharing class TwilioSegmentServices {
 
         // Perform Request
         HTTPResponse response = http.send(request);
-        return TwilioSegmentProfileEventResponse.parse(response.getBody());
+        return response.getBody();
     }
 
     public class TwilioSegmentException extends Exception {}
