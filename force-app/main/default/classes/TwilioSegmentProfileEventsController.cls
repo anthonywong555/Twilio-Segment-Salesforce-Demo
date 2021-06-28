@@ -1,6 +1,21 @@
 public with sharing class TwilioSegmentProfileEventsController {
 
     @AuraEnabled(cacheable=true)
+    public static String getProfileTraitSettings() {
+        try {
+            List<Twilio_Segment_Trait_Property__mdt> traitSettings = [
+                SELECT Id, MasterLabel, Key__c, Order__c
+                FROM Twilio_Segment_Trait_Property__mdt
+                ORDER BY Order__c NULLS LAST
+            ];
+
+            return JSON.serialize(traitSettings);
+        } catch(Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled(cacheable=true)
     public static String getSettings() {
         try {
             // Only load active Twilio Segment Events Settings.
@@ -16,7 +31,7 @@ public with sharing class TwilioSegmentProfileEventsController {
                 SELECT MasterLabel, Key__c, Order__c, Twilio_Segment_Event__r.Id
                 FROM Twilio_Segment_Event_Property__mdt
                 WHERE Twilio_Segment_Event__r.Id IN: eventIds
-                ORDER BY Order__c ASC
+                ORDER BY Order__c ASC NULLS LAST
             ];
 
             Map<Id, List<Twilio_Segment_Event_Property__mdt>> eventIdToProps = new Map<Id, List<Twilio_Segment_Event_Property__mdt>>();
