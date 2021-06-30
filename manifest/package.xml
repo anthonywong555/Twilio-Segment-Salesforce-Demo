@@ -1,22 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
+		<members>TwilioSegmentProfileController</members>
+		<members>TwilioSegmentProfileControllerTest</members>
 		<members>TwilioSegmentProfileEventResponse</members>
+		<members>TwilioSegmentProfileEventResponseTest</members>
+		<members>TwilioSegmentProfileEventsController</members>
+		<members>TwilioSegmentProfileEventsControllerTest</members>
+		<members>TwilioSegmentProfileHttpResponseGenerato</members>
+		<members>TwilioSegmentProfileTraitsController</members>
+		<members>TwilioSegmentProfileTraitsControllerTest</members>
+		<members>TwilioSegmentProfileTraitsResponse</members>
+		<members>TwilioSegmentProfileTraitsResponseTest</members>
 		<members>TwilioSegmentServices</members>
+		<members>TwilioSegmentServicesTest</members>
 		<name>ApexClass</name>
-	</types>
-	<types>
-		<members>*</members>
-		<name>CustomMetadata</name>
 	</types>
 	<types>
 		<members>Twilio_Segment_Event_Property__mdt</members>
 		<members>Twilio_Segment_Event__mdt</members>
+		<members>Twilio_Segment_Profile_Credential__mdt</members>
+		<members>Twilio_Segment_Trait_Property__mdt</members>
 		<name>CustomObject</name>
 	</types>
 	<types>
-		<members>*</members>
+		<members>icon</members>
+		<members>twilioSegment</members>
+		<members>twilioSegmentProfile</members>
+		<members>twilioSegmentProfileEventItem</members>
+		<members>twilioSegmentProfileEvents</members>
+		<members>twilioSegmentProfileEventsProcessor</members>
+		<members>twilioSegmentProfileTraits</members>
 		<name>LightningComponentBundle</name>
+	</types>
+	<types>
+		<members>Twilio_Segment</members>
+		<name>RemoteSiteSetting</name>
+	</types>
+	<types>
+		<members>Twilio_Segment_Logo</members>
+		<name>StaticResource</name>
 	</types>
 	<version>51.0</version>
 </Package>
