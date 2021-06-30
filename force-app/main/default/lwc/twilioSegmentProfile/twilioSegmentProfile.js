@@ -1,5 +1,5 @@
 import { LightningElement, api, wire } from 'lwc';
-import getCustomerDetails from '@salesforce/apex/TwilioSegmentProfileEventsController.getCustomerDetails';
+import getCustomerDetails from '@salesforce/apex/TwilioSegmentProfileController.getCustomerDetails';
 
 export default class TwilioSegmentProfile extends LightningElement {
   /**

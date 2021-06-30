@@ -1,49 +1,6 @@
 public with sharing class TwilioSegmentProfileEventsController {
 
     @AuraEnabled(cacheable=true)
-    public static String getCustomerDetails(
-        String recordId,
-        String objectApiName,
-        String customerNameField,
-        String customerTitleField,
-        String customerImageField,
-        String customerBackgroundImageField
-    ) {
-        try {
-            Set<String> soqlFields = new Set<String>{customerNameField, customerTitleField, customerImageField, customerBackgroundImageField};
-            soqlFields.remove(null);
-            
-            String dynamicSOQL = 'SELECT Id, ' + String.join(new List<String>(soqlFields), ',') + ' FROM ' + objectAPIName + ' WHERE Id =: recordId';
-            String safeQuery = String.escapeSingleQuotes(dynamicSOQL);
-            List<sObject> sObjects = Database.query(safeQuery);
-            String results = '{}';
-            if(!sObjects.isEmpty()) {
-                sObject targetSObject = sObjects[0];
-                results = JSON.serialize(targetSObject);
-            }
-
-            return results;
-        } catch(Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
-    }
-
-    @AuraEnabled(cacheable=true)
-    public static String getProfileTraitSettings() {
-        try {
-            List<Twilio_Segment_Trait_Property__mdt> traitSettings = [
-                SELECT Id, MasterLabel, Key__c, Order__c
-                FROM Twilio_Segment_Trait_Property__mdt
-                ORDER BY Order__c NULLS LAST
-            ];
-
-            return JSON.serialize(traitSettings);
-        } catch(Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
-    }
-
-    @AuraEnabled(cacheable=true)
     public static String getSettings() {
         try {
             // Only load active Twilio Segment Events Settings.
@@ -102,25 +59,6 @@ public with sharing class TwilioSegmentProfileEventsController {
         public Setting(Twilio_Segment_Event__mdt event, List<Twilio_Segment_Event_Property__mdt> properties) {
             this.event = event;
             this.properties = properties;
-        }
-    }
-
-    @AuraEnabled(cacheable=true)
-    public static string getTraits(String recordId, String objectAPIName, String segmentIdentifierKey, String segmentIdentifierValue) {
-        try {
-            String dynamicSOQL = 'SELECT Id, ' + segmentIdentifierValue + ' FROM ' + objectAPIName + ' WHERE Id =: recordId';
-            String safeQuery = String.escapeSingleQuotes(dynamicSOQL);
-            List<sObject> sObjects = Database.query(safeQuery);
-            String results = '{}';
-            if(!sObjects.isEmpty()) {
-                sObject targetSObject = sObjects[0];
-                String value = (String)targetSObject.get(segmentIdentifierValue);
-                results = TwilioSegmentServices.getProfileTraits(segmentIdentifierKey, value).json;
-            }
-
-            return results;
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
         }
     }
 

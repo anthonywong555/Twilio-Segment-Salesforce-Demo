@@ -1,6 +1,6 @@
 import { LightningElement, track, api } from 'lwc';
-import getTraits from '@salesforce/apex/TwilioSegmentProfileEventsController.getTraits';
-import getProfileTraitSettings from '@salesforce/apex/TwilioSegmentProfileEventsController.getProfileTraitSettings';
+import getTraits from '@salesforce/apex/TwilioSegmentProfileTraitsController.getTraits';
+import getProfileTraitSettings from '@salesforce/apex/TwilioSegmentProfileTraitsController.getProfileTraitSettings';
 export default class TwilioSegmentProfileTraits extends LightningElement {
   /**
    * API
@@ -140,7 +140,6 @@ export default class TwilioSegmentProfileTraits extends LightningElement {
 
     return transformTraits;
   }
-
 
   handleError(e) {
     this.errorMessage = e.message ? e.message : e.body.message;
