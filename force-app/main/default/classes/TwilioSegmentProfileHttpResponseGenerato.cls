@@ -27,8 +27,11 @@ public with sharing class TwilioSegmentProfileHttpResponseGenerato implements Ht
 
     public HTTPResponse respond(HTTPRequest req) {
         String uri = req.getEndpoint();
-        String expectedURI = TwilioSegmentServices.generateURI(TEST_SPACE_ID, TEST_ID_KEY + ':' + TEST_ID_VALUE);
-        System.assertEquals(expectedURI, uri, 'We expect the URI to match.');
+        String expectedURI = TwilioSegmentServices.generateURI(
+            TEST_SPACE_ID, TEST_ID_KEY + ':' + TEST_ID_VALUE,
+            TwilioSegmentServices.EVENTS_ROUTE,
+            TwilioSegmentServices.EVENTS_LIMITS
+        );
         System.assertEquals(TwilioSegmentServices.HTTP_METHOD_GET, req.getMethod(), 'We expect HTTP METHOD is GET');
         
         HttpResponse res = new HttpResponse();

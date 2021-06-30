@@ -1,6 +1,18 @@
 public with sharing class TwilioSegmentServices {
 
     @TestVisible
+    private static final Integer TRAITS_LIMITS = 200;
+
+    @TestVisible
+    private static final String TRAITS_ROUTE = 'traits';
+
+    @TestVisible
+    private static final Integer EVENTS_LIMITS = 20;
+
+    @TestVisible
+    private static final String EVENTS_ROUTE = 'events';
+
+    @TestVisible
     private static Twilio_Segment_Profile_Credential__mdt credential {
         get {
             if(credential == null) {
@@ -32,14 +44,14 @@ public with sharing class TwilioSegmentServices {
     public static TwilioSegmentProfileTraitsResponse getProfileTraits(String identifierKey, String identifierValue) {
         String spaceId = credential.Space_Id__c;
         String identity = identifierKey + ':' + identifierValue;
-        String uri = generateURI(spaceId, identity, 'traits', 200);
+        String uri = generateURI(spaceId, identity, TRAITS_ROUTE, TRAITS_LIMITS);
         return TwilioSegmentProfileTraitsResponse.parse(performRequest(uri));
     }
 
     public static TwilioSegmentProfileEventResponse getProfileEvents(String identifierKey, String identifierValue) {
         String spaceId = credential.Space_Id__c;
         String identity = identifierKey + ':' + identifierValue;
-        String uri = generateURI(spaceId, identity, 'events', 20);
+        String uri = generateURI(spaceId, identity, EVENTS_ROUTE, EVENTS_LIMITS);
         return TwilioSegmentProfileEventResponse.parse(performRequest(uri));
     }
 

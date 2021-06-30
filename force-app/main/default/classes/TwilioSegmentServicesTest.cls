@@ -33,7 +33,9 @@ private class TwilioSegmentServicesTest {
         // Generate a cursorUrl
         String cursorUrl = TwilioSegmentServices.generateURI(
             TwilioSegmentProfileHttpResponseGenerato.TEST_SPACE_ID, 
-            TwilioSegmentProfileHttpResponseGenerato.TEST_ID_KEY + ':' + TwilioSegmentProfileHttpResponseGenerato.TEST_ID_VALUE
+            TwilioSegmentProfileHttpResponseGenerato.TEST_ID_KEY + ':' + TwilioSegmentProfileHttpResponseGenerato.TEST_ID_VALUE,
+            TwilioSegmentServices.EVENTS_ROUTE,
+            TwilioSegmentServices.EVENTS_LIMITS
         );
 
         TwilioSegmentProfileEventResponse result;
