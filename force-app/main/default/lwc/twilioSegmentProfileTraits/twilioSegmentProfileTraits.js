@@ -141,6 +141,7 @@ export default class TwilioSegmentProfileTraits extends LightningElement {
     return transformTraits;
   }
 
+
   handleError(e) {
     this.errorMessage = e.message ? e.message : e.body.message;
     this.hasError = true;

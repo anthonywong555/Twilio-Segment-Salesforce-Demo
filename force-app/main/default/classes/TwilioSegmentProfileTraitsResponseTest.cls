@@ -3,7 +3,7 @@
 //
 @isTest
 private class TwilioSegmentProfileTraitsResponseTest {
-    
+	
     @isTest
 	static void testParse() {
 		String json = '{'+
