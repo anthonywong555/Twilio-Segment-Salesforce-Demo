@@ -1,14 +1,33 @@
 <template>
-    <c-twilio-segment-profile-traits
-        record-id={recordId}
-        object-api-name={objectApiName}
-        segment-identifier-key={segmentIdentifierKey}
-        segment-identifier-value={segmentIdentifierValue}
-    ></c-twilio-segment-profile-traits>
-    <c-twilio-segment-profile-events
-        record-id={recordId}
-        object-api-name={objectApiName}
-        segment-identifier-key={segmentIdentifierKey}
-        segment-identifier-value={segmentIdentifierValue}
-    ></c-twilio-segment-profile-events>
+    <div if:false={hasError}>
+        <div if:true={hasAllFields} style={backgroundImage}>
+            <div class="slds-grid" style="padding-top: 6em;">
+                <div class="slds-col" style="text-align: center;">
+                    <img alt={customerName} class="circular--square" src={customerImage} title={customerName} />
+                </div>
+                <div class="slds-col" style="margin:auto;">
+                    <div class="slds-text-heading_medium"> 
+                        {customerName}
+                    </div>
+                    <div class="slds-text-title">
+                        {customerTitle}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div if:true={hasError}>
+        <lightning-card>
+            <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                <h2>An error has occurred. Here is the error message: 
+                    <br /><br />
+                {errorMessage}
+                </h2>
+            </div>
+        </lightning-card>
+    </div>
+    <div if:true={isFetching} class="slds-is-relative">
+        <lightning-spinner variant="brand" size="large">
+        </lightning-spinner>
+    </div>
 </template>

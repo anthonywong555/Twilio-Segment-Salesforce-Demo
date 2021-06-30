@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>52.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <!-- Segment's Fields -->
+            <property name="segmentIdentifierKey" type="String" label="Segment Identifier Key" required="true" description="Segment Identifier Key. Example phone." default=""/>    
+            <property name="segmentIdentifierValue" type="String" label="Segment Identifier Value" required="true" description="SObject Field Value. For example MobilePhone." default=""/>
+            <property name="isAutoFetch" type="Boolean" label="Auto Fetch" required="false" description="Fetch new events." default="false"/>
+            <property name="autoFetchInMins" type="Integer" label="Auto Fetch in Mins" required="false" description="Fetch new events in mins." min="1" max="5" default="5"/>
+            <!-- Customer's Fields -->
+            <property name="customerName" type="String" label="Customer's Name" required="false" description="SObject Field Value of Customer's Name."/>
+            <property name="customerTitle" type="String" label="Customer's Title" required="false" description="SObject Field Value of Customer's Title."/>
+            <property name="customerImage" type="String" label="Customer's Image" required="false" description="SObject Field Value of Customer's Image URL."/>
+            <property name="customerBackgroundImage" type="String" label="Customer's Background Image" required="false" description="SObject Field Value of Customer's Background Image URL."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

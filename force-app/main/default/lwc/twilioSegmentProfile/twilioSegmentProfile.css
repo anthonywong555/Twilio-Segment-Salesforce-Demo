@@ -1,0 +1,6 @@
+.circular--square {
+    height: 6rem;
+    width: 6rem;
+    border: 5px solid white;
+    border-radius: 50%;
+}
