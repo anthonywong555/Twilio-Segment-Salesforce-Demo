@@ -15,6 +15,13 @@
                 </div>
             </div>
         </div>
+        <div if:false={hasAllFields}>
+            <lightning-card>
+                <div class="slds-var-m-around_medium" style="text-align: center;">
+                    <img src={twilioSegmentLogoURL} alt="Twilio Segment Logo" />
+                </div>
+            </lightning-card>
+        </div>
     </div>
     <div if:true={hasError}>
         <lightning-card>

@@ -1,4 +1,5 @@
 import { LightningElement, api, wire } from 'lwc';
+import twilioSegmentLogoURL from '@salesforce/resourceUrl/Twilio_Segment_Logo';
 import getCustomerDetails from '@salesforce/apex/TwilioSegmentProfileController.getCustomerDetails';
 
 export default class TwilioSegmentProfile extends LightningElement {
@@ -28,6 +29,7 @@ export default class TwilioSegmentProfile extends LightningElement {
 
   // UI Elements
   isFetching = false;
+  twilioSegmentLogoURL = twilioSegmentLogoURL;
 
   async connectedCallback() {
     if(!this.hasConnectedCallback) {

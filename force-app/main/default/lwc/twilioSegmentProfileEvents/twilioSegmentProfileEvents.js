@@ -1,5 +1,4 @@
 import { LightningElement, track, api } from 'lwc';
-import twilioSegmentLogoURL from '@salesforce/resourceUrl/Twilio_Segment_Logo';
 import getEvents from '@salesforce/apex/TwilioSegmentProfileEventsController.getEvents';
 import loadMore from '@salesforce/apex/TwilioSegmentProfileEventsController.loadMore';
 import getSettings from '@salesforce/apex/TwilioSegmentProfileEventsController.getSettings';
@@ -33,7 +32,6 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
 
   // UI Elements
   isFetching = false;
-  twilioSegmentLogoURL = twilioSegmentLogoURL;
   cssClasses = "slds-timeline__item_expandable slds-timeline__item_email to-expand";
   
   // Events
