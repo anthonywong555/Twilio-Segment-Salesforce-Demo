@@ -53,7 +53,7 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
     if(!this.hasConnectedCallback) {
       // Set Loading Wheel
       this.hasConnectedCallback = true;
-      this.isFetching = !this.isFetching;
+      this.isFetching = true;
 
       try {
         // Get Settings
@@ -74,7 +74,9 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
           // Set Timeout
           const mins = this.autoFetchInMins * 60 * 1000;
           this.timer = setInterval(async() => {
-            await this.handleAutoRefresh();
+            if(!this.errorMessage) {
+              await this.handleAutoRefresh();
+            }
           }, mins);
         }
       } catch(e) {
@@ -82,13 +84,13 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
       }
 
       // Remove Loading Wheel
-      this.isFetching = !this.isFetching;
+      this.isFetching = false;
     }
   }
 
   async handleAutoRefresh() {
     try {
-      this.isFetching = !this.isFetching;
+      this.isFetching = true;
 
       // Get Segment Events
       const eventResponse = JSON.parse(await getEvents({
@@ -101,7 +103,7 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
       // Transform and Set Component Props
       this.handleEventResponse(eventResponse);
 
-      this.isFetching = !this.isFetching;
+      this.isFetching = false;
 
     } catch(e) {
       this.handleError(e);
@@ -113,6 +115,13 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
   }
 
   handleEventResponse(eventResponse) {
+    // Check to see if Event Response has all the correct data
+
+    if(eventResponse.error) {
+      // Otherwise throw an error
+      throw eventResponse.error;
+    }
+
     // Set Properties
     this.eventResponse = eventResponse;
     this.cursor = eventResponse.cursor;
@@ -152,9 +161,9 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
     const areaHeight = area.clientHeight;
     const scrollTop = event.target.scrollTop;
 
-    if(areaHeight - threshold < scrollTop && this.hasMore && !this.isFetching) {
+    if(areaHeight - threshold < scrollTop && this.hasMore && !this.isFetching && !this.errorMessage) {
       // Set Loading Wheel
-      this.isFetching = !this.isFetching;
+      this.isFetching = true;
 
       // Get More Data
       await this.handleMoreFetch();
@@ -171,6 +180,6 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
     }
 
     // Remove Loading Wheel
-    this.isFetching = !this.isFetching;
+    this.isFetching = false;
   }
 }

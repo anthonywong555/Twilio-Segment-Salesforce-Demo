@@ -50,7 +50,7 @@ export default class TwilioSegmentProfileTraits extends LightningElement {
     if(!this.hasConnectedCallback) {
       // Set Loading Wheel
       this.hasConnectedCallback = true;
-      this.isFetching = !this.isFetching;
+      this.isFetching = true;
 
       try {
         // Get Settings
@@ -71,7 +71,9 @@ export default class TwilioSegmentProfileTraits extends LightningElement {
           // Set Timeout
           const mins = this.autoFetchInMins * 60 * 1000;
           this.timer = setInterval(async() => {
-            await this.handleAutoRefresh();
+            if(!this.errorMessage) {
+              await this.handleAutoRefresh();
+            }
           }, mins);
         }
       } catch(e) {
@@ -79,7 +81,7 @@ export default class TwilioSegmentProfileTraits extends LightningElement {
       }
 
       // Remove Loading Wheel
-      this.isFetching = !this.isFetching;
+      this.isFetching = false;
     }
   }
 
@@ -89,7 +91,7 @@ export default class TwilioSegmentProfileTraits extends LightningElement {
 
   async handleAutoRefresh() {
     try {
-      this.isFetching = !this.isFetching;
+      this.isFetching = true;
 
       // Get Segment Traits
       const traitsResponse = JSON.parse(await getTraits({
@@ -102,7 +104,7 @@ export default class TwilioSegmentProfileTraits extends LightningElement {
       // Transform and Set Component Props
       this.handleTraitsResponse(traitsResponse);
 
-      this.isFetching = !this.isFetching;
+      this.isFetching = false;
 
     } catch(e) {
       this.handleError(e);
@@ -149,6 +151,13 @@ export default class TwilioSegmentProfileTraits extends LightningElement {
   }
 
   handleTraitsResponse(traitsResponse) {
+    // Check to see if Event Response has all the correct data
+
+    if(traitsResponse.error) {
+      // Otherwise throw an error
+      throw traitsResponse.error;
+    }
+
     // Set Properties
     this.traitsResponse = traitsResponse;
     this.cursor = traitsResponse.cursor;
