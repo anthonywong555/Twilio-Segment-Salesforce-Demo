@@ -10,9 +10,9 @@ You will need the following:
 ## Getting Started
 
 ### Install
-- Package Id: 04t5e000000yVpp
-- [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5e000000yVpp)
-- [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5e000000yVpp)
+- Package Id: 04t5e000000ynXN
+- [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5e000000ynXN)
+- [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5e000000ynXN)
 
 ### Twilio Segment Credentials
 
