@@ -31,13 +31,6 @@ You will need the following:
 
 6. Click Save
 
-### Adding LWC Component 
+### Setting up
 
-1. Go to a Record Page.
-2. Click on the gear icon and Select `Edit Page`.
-3. Under `Custom`, drap and drop the `twilioSegmentProfileEvents` on the page.
-![](./assets/LWCComponentPart1.png)
-4. In the text field, add your Segment Id Key and Segment Id Value. The Segment Id Value should be the sObject Field.
-![](./assets/LWCComponentPart2.png)
-5. If you did everything correctly, then you should see the information render.
-![](./assets/LWCComponentPart3.png)
+Watch this [video](https://youtu.be/QZyQ54WJQkA).
