@@ -33,7 +33,7 @@ const transformEvent = (targetEvent, targetSetting) => {
 
   // Format Timestamp
   const timestamp = new Date(targetEvent.timestamp);
-  const date = `${timestamp.getMonth()}/${timestamp.getDate()}/${timestamp.getFullYear()}`;
+  const date = `${timestamp.getMonth() + 1}/${timestamp.getDate()}/${timestamp.getFullYear()}`;
   const time = timestamp.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 
   const {message_id} = targetEvent;
