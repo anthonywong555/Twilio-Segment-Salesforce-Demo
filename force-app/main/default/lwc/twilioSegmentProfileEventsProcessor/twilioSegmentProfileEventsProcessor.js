@@ -1,6 +1,13 @@
 import { getIcon } from 'c/icon';
 
 const transformEvents = (events, settings) => {
+
+  // Check to see if there's any events
+  if(!events) {
+    return [];
+  }
+  
+
   let modifyEvents = events.map((aEvent) => {
     const relatedSetting = settings.find((aSetting) => {
       const {event} = aSetting;
@@ -58,7 +65,7 @@ const transformEventProps = (targetEventProps, targetSettingProps) => {
       const {Key__c, MasterLabel} = aPropSetting;
       results.push({
         key: MasterLabel,
-        value: targetEventProps[Key__c],
+        value: getNested(targetEventProps, Key__c),
         id: `${Key__c}${MasterLabel}${Math.random()}`
       })
     }
@@ -73,6 +80,24 @@ const transformEventProps = (targetEventProps, targetSettingProps) => {
       }
     });
   }
+}
+
+const getNested = (theObject, path, separator) => {
+  try {
+      separator = separator || '.';
+  
+      return path.
+              replace('[', separator).replace(']','').
+              split(separator).
+              reduce(
+                  function (obj, property) { 
+                      return obj[property];
+                  }, theObject
+              );
+                  
+  } catch (err) {
+      return undefined;
+  }   
 }
 
 export {transformEvents};

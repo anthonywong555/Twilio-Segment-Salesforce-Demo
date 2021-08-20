@@ -20,7 +20,6 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
   /**
    * Track
    */
-  //@track data = [];
   @track events = [];
 
   /**
@@ -148,7 +147,8 @@ export default class TwilioSegmentProfileEvents extends LightningElement {
   }
 
   handleError(e) {
-    this.errorMessage = e.message ? e.message : e.body.message;
+    const segmentErrorMsg = e.message ? e.message : e.body.message;
+    this.errorMessage = segmentErrorMsg == 'the resource was not found' ? `No Twilio Segment Persona's Events was found for this record.` : segmentErrorMsg;
     this.hasError = true;
     this.isFetching = false;
   }

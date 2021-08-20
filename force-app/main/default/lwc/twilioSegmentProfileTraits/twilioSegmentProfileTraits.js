@@ -145,7 +145,8 @@ export default class TwilioSegmentProfileTraits extends LightningElement {
 
 
   handleError(e) {
-    this.errorMessage = e.message ? e.message : e.body.message;
+    const segmentErrorMsg = e.message ? e.message : e.body.message;
+    this.errorMessage = segmentErrorMsg == 'the resource was not found' ? `No Twilio Segment Persona's Traits was found for this record.` : segmentErrorMsg;
     this.hasError = true;
     this.isFetching = false;
   }
