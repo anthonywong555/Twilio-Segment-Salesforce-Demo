@@ -58,7 +58,7 @@ const transformEvent = (targetEvent, targetSetting) => {
 }
 
 const transformEventProps = (targetEventProps, targetSettingProps) => {
-  if(targetSettingProps && targetSettingProps.length > 0) {
+  if(targetEventProps && targetSettingProps && targetSettingProps.length > 0) {
     const results = [];
 
     for(const aPropSetting of targetSettingProps) {
@@ -72,7 +72,8 @@ const transformEventProps = (targetEventProps, targetSettingProps) => {
 
     return results;
   } else {
-    return Object.entries(targetEventProps).map(([key, value]) => {
+    const newTargetEventProps = {...targetEventProps};
+    return Object.entries(newTargetEventProps).map(([key, value]) => {
       return {
         key,
         value,
